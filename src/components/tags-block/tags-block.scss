@@ -1,0 +1,22 @@
+.tags{
+    font-size: 0.87rem;
+    display: flex;
+    flex-flow: wrap;    
+    margin-top: 10px;
+    
+    div{
+        padding: 2px 5px;
+        // background: #d500000f;
+        background: #4f5b62;
+        border-radius: 5px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        
+        a.tag {
+            z-index: 1;
+            position: relative;
+            color: white;
+            font-weight: 400;
+        }
+    }
+}

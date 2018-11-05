@@ -1,0 +1,46 @@
+.index-menu {
+  margin-top: 3rem;
+  font-weight: 400;
+  display: flex;
+  justify-content: space-between;
+  margin-left: 0;
+
+  @media screen and (max-width: 750px) {
+    flex-direction: column;
+    margin-top: 3rem;
+  }
+
+  .link-block {
+    font-size: 0.8rem;
+    max-width: calc(100% / 3);
+
+    a:not(.special-link):not(.see-more) {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    @media screen and (max-width: 750px) {
+      max-width: 100%;
+      margin-bottom: 3rem;
+    }
+
+    .link-block-title {
+      color: #4f5b62;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin: 2rem 0 1rem;
+
+      @media screen and (max-width: 750px) {
+        margin: 1rem 0 0.5rem;
+      }
+    }
+
+    .link-block-content {
+      .blog-links {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+}
