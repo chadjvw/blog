@@ -1,9 +1,26 @@
 ---
-title: 'Reducing EBS Volume Cost Using AWS Step Functions'
+title: 'Reducing EBS Volume Cost With AWS Step Functions'
 date: '2018-11-01'
 tags: ['AWS', 'Lambda', 'Step Functions', 'PCI Cloud']
 type: 'blog'
 ---
+Before anything: 350/400/day ebs, 100-150/day instance, $0/day snapshot
+Before os snapshot: 200/250/day ebs, 150/200/day instance, 10$/day snapshot
+After os snapshot: 70/80/day ebs, 150/200/day instanc, 20$/day snapshot
+
+# New
+
+Cutting AWS EC2 on-demand spending by half may seem like crazy talk but at [Power Costs,
+Inc.](https://www.powercosts.com/) (PCI) we achieved this by automating the shutdown and snapshotting of our instances.
+It's been about 2 years since we moved the majority of our internal development servers to AWS EC2. This has given us
+new levels of capability and flexibility and the monetary costs that comes with it.
+
+When we first started out on our move to the cloud we decided to crate a simple CLI app for users. This app talks to a
+server that performs all the AWS API calls and tracks instance state and metadata. In the beginning we focused on the
+basics: create, stop, start and terminate. This gave us good fundamental knowledge about how AWS and EC2 worked. We also
+added an automatic shutdown of any instance that was online at 7 PM to keep initial costs under control.
+
+# Old
 
 At [Power Costs, Inc.](https://www.powercosts.com/), (PCI) we are about 2 years into our move of our development
 environments into the cloud. We build enterprise software for power and utility companies that manages everything from
