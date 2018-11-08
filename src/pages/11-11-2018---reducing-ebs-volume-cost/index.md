@@ -20,6 +20,16 @@ server that performs all the AWS API calls and tracks instance state and metadat
 basics: create, stop, start and terminate. This gave us good fundamental knowledge about how AWS and EC2 worked. We also
 added an automatic shutdown of any instance that was online at 7 PM to keep initial costs under control.
 
+As usage of our service grew we started analyzing what the majority of our cost was going to. Turns out that over 70% of
+our cost was due to EBS volume storage/space. This is because of two main reasons:
+
+1. Databases running on EC2 needed anywhere form 30 to 900 GB
+2. Users create a new database, use it once and never clean it up
+
+To begin reducing our EBS usage we decided to snapshot each database as it was shutdown. To do this we could've added
+the code into our server but we decided to find a Serverless option. This gives us a key benefit of surviving a server
+event and picking up right where our process left off. After some research we found the AWS Step Functions service.
+
 # Old
 
 At [Power Costs, Inc.](https://www.powercosts.com/), (PCI) we are about 2 years into our move of our development
