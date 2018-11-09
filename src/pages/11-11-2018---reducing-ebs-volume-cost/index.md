@@ -1,19 +1,19 @@
 ---
-title: 'Reducing EBS Volume Cost With AWS Step Functions'
-date: '2018-11-01'
+title: 'Reducing AWS Costs With Step Functions'
+date: '2018-11-11'
 tags: ['AWS', 'Lambda', 'Step Functions', 'PCI Cloud']
 type: 'blog'
 ---
-Before anything: 350/400/day ebs, 100-150/day instance, $0/day snapshot
-Before os snapshot: 200/250/day ebs, 150/200/day instance, 10$/day snapshot
-After os snapshot: 70/80/day ebs, 150/200/day instanc, 20$/day snapshot
+<!---
+Before anything: 70% ebs, 30% instance, 0% snapshot
+Before os snapshot: 55% ebs, 43% instance, 2% snapshot
+After os snapshot: 25% ebs, 67% instanc, 8% snapshot
+--->
 
-# New
-
-Cutting AWS EC2 on-demand spending by half may seem like crazy talk but at [Power Costs,
-Inc.](https://www.powercosts.com/) (PCI) we achieved this by automating the shutdown and snapshotting of our instances.
-It's been about 2 years since we moved the majority of our internal development servers to AWS EC2. This has given us
-new levels of capability and flexibility and the monetary costs that comes with it.
+Cutting AWS EC2 on-demand spending by half may seem like crazy talk but at Power Costs, Inc. (PCI) we achieved this by
+automating the shutdown and snapshotting of our instances. It's been about 2 years since we moved the majority of our
+internal development servers to AWS EC2. This has given us new levels of capability and flexibility and the monetary
+costs that comes with it.
 
 When we first started out on our move to the cloud we decided to crate a simple CLI app for users. This app talks to a
 server that performs all the AWS API calls and tracks instance state and metadata. In the beginning we focused on the
@@ -23,69 +23,28 @@ added an automatic shutdown of any instance that was online at 7 PM to keep init
 As usage of our service grew we started analyzing what the majority of our cost was going to. Turns out that over 70% of
 our cost was due to EBS volume storage/space. This is because of two main reasons:
 
-1. Databases running on EC2 needed anywhere form 30 to 900 GB
+1. Databases running on EC2 needed anywhere form 30 to 900 GB of volume space
 2. Users create a new database, use it once and never clean it up
 
-To begin reducing our EBS usage we decided to snapshot each database as it was shutdown. To do this we could've added
-the code into our server but we decided to find a Serverless option. This gives us a key benefit of surviving a server
-event and picking up right where our process left off. After some research we found the AWS Step Functions service.
+To begin reducing our EBS usage we decided to snapshot each database as it was shutdown. Because we would be deleting
+and creating volumes whatever we did needed to be robust. We considered writing our own implementation but discovered an
+Amazon service that fit the bill.
 
-# Old
-
-At [Power Costs, Inc.](https://www.powercosts.com/), (PCI) we are about 2 years into our move of our development
-environments into the cloud. We build enterprise software for power and utility companies that manages everything from
-power generation and optimization, power sale to the energy market, settlement statement analysis and much more. Many of
-our clients run an on premise installation with most newer clients opting for our hosted option.
-
-To assist with troubleshooting, testing and feature development, clients send us copies of their database schemas that
-we store and control access to. In the past when a developer or analyst needs to work on an issue for a
-specific client, they would request an import of a new schema dump or a copy of an existing schema made on our
-internal database. This process takes a week or more due to the space and speed constraints of our aging
-internal infrastructure. Once the schema copy was complete, they would head over to one of many internal virtual
-machines to install the correct version of our application and get in a Remote Desktop fight with a few other
-developers along the way.
-
-_All the examples from this post will be available on Github [here](https://github.com/powercosts/ebs-sf-example) and
-include instructions for how to run the code._
-
-## PCI Cloud
-
-To ease this pressure, we designed and built a simple command line app and a Java web service called PCI Cloud that
-would allow a user to create a new environment with a given clients database schema in AWS and shut them
-down at 7pm. In the beginning we called the EC2 API to create two `t2.medium` EC2 instances, 1 for the application
-server and 1 for the database with an EBS Snapshot attached containing the requested schema. PCI Cloud can create a
-fresh new environment and turn it over to a developer in about 20 minutes. This was a vast improvement over the previous
-week long wait time.
-
-This system worked very well with a few teams using PCI Cloud. But we bought Cloud online for the rest of the
-company cost became a concern, not because of compute expenses, but EBS volume storage. With database schema
-sizes ranging from 30 GB to over 900 GB across several hundred databases we has to request a service limit increase to
-200 TB of EBS volume space to make it through normal day to day operations. We also discovered that users have a
-tendency to not terminate an environment after they have finished with it. We discovered some environments that had
-been offline for almost 6 months with huge database schemas attached, each costing us several hundred dollars per month
-for sitting around doing nothing.
-
-Enter the humble [EBS Snapshot](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSSnapshots.html). As we became
-more familiar with AWS services and began thinking about how to reduce our operating costs, we began to experiment with
-the idea of snapshotting the database schema each time an environment was shutdown. This would mean that we would be
-paying only for the storage blocks that differed from the previous snapshot, and since developers rarely change any of
-the schema data, this would half the EBS costs of environments used every day and provide even more savings to
-environments that were off for long periods of time.
+_Sample code and services refrenced in this post are available on
+[Github](https://github.com/powercosts/ebs-sf-example)._
 
 ## AWS Step Functions
 
-When we were designing our snapshot on shutdown process we considered adding the code into our Java web service, but
-abandoned that idea since it wasn't doing things in an Amazon way. As we looked around at the plethora of AWS
-services, we became very interested in [AWS Step Functions](https://aws.amazon.com/step-functions/). This service allows
-you to create a serverless state machine with various task, choice and wait states to control your workflow. Coca-Cola
-gave [a great talk at re:Invent 2017](https://www.youtube.com/watch?v=sMaqd5J69Ns&feature=youtu.be&t=501) about how they
-use Step Functions for reward programs and product nutrition syndication.
+Step Functions enable coordination of many AWS services into a serverless workflow. Step Functions are built out of
+task, choice and wait states to control your workflow. Coca-Cola gave a great talk at re:Invent on how they use Step
+Functions for creating nutrition labels.
 
-Our Step Functions allow invokes a series of [AWS Lambda](https://aws.amazon.com/lambda/) functions running NodeJS 8.10
-to perform the various EC2 API actions to shut down all an environments instances, find the database schema volume,
-detach it, create the snapshot, then notify the user. Rather than waiting inside each lambda for actions like snapshot
-creation to finish (and give Amazon free money) we use a wait choice loop to check on the status of an action and
-wait for its resolution.
+Our Step Functions are chains of AWS Lambda functions that call the AWS EC2 API. These Step Functions shutdown an
+instance and convert its EBS volumes to snapshots. Because Step Functions include a wait and choice state this enables
+easy looping. Instead of waiting inside a Lambda function for a snapshot to complete we output the current status into
+the Step Function state. Then we check that output and verify that the action was successful. If it wasn't then we wait
+for a period of time and loop back to the check status function. If it was successful we go to the next step in the
+workflow.
 
 ![Stop Step Function](stop-step-function.png)
 
@@ -98,7 +57,7 @@ happy about that.
 
 ## Drawbacks
 
-There are some drawbacks to this approach. First, there is the [known performance degradation of an uninitialized
+There are some drawbacks to this approach. First, there is a [known performance degradation of an uninitialized
 volume](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-initialize.html). The OS has to sit and wait around for
 EBS to fetch blocks from S3 before they can be used available to the OS. We have noticed that some database queries will be
 slow the first time they are ran then normal speeds every time after that. Since all PCI Cloud environments are not
