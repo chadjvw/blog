@@ -15,17 +15,16 @@ Cutting AWS on-demand spending by half may seem like crazy talk but at [Power Co
 moved the majority of our internal development servers to AWS EC2. This has given us new levels of capability and
 flexibility and the monetary costs that comes with it.
 
-When we first started out on our move to the cloud we decided to crate a simple CLI app for users. This app talks to a
+When we first started out on our move to the cloud we decided to create a simple CLI app for users. This app talks to a
 server that performs all the AWS API calls and tracks instance state and metadata. In the beginning we focused on the
 basics: create, stop, start and terminate. This gave us good fundamental knowledge about how AWS and EC2 worked. We also
 added an automatic shutdown of any instance that was online at 7 PM to keep initial costs under control.
 
 As usage of our service grew we started analyzing what the majority of our cost was going to. Turns out that over 70% of
-our cost was due to [EBS volume](https://aws.amazon.com/ebs/features/) storage/space. This is because of two main
-reasons:
+our cost was due to [EBS volume](https://aws.amazon.com/ebs/features/) space. This is because of two main reasons:
 
 1. Databases running on EC2 needed anywhere form 30 to 900 GB of volume space
-2. Users create a new database, use it once and never clean it up
+2. Users create a new database, use it once and let it sit around offline for months
 
 To begin reducing our EBS usage we decided to snapshot each database as it was shutdown. Because we would be deleting
 and creating volumes whatever we did needed to be robust. We considered writing our own implementation but discovered an
@@ -36,10 +35,11 @@ _Sample code and services refrenced in this post are available on
 
 ## AWS Step Functions
 
-[Step Functions](https://aws.amazon.com/step-functions/features/) enable coordination of many AWS services into a
-serverless workflow. Step Functions are built out of task, choice and wait states to control your workflow. Coca-Cola
-gave [a great talk at re:Invent](https://youtu.be/sMaqd5J69Ns?t=502) on how they use Step Functions for creating
-nutrition labels.
+[Step Functions](https://aws.amazon.com/step-functions/features/) enable coordination of multiple AWS services into a
+serverless workflow. Step Functions are built out of [task, choice and wait
+states](https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-states.html) to control your
+workflow. Coca-Cola gave [a great talk at re:Invent 2017](https://youtu.be/sMaqd5J69Ns?t=502) on how they use Step
+Functions for creating nutrition labels.
 
 Our Step Functions are chains of [AWS Lambda](https://aws.amazon.com/lambda/features/) functions that call the AWS EC2
 API. These Step Functions shutdown an instance and convert its EBS volumes to snapshots. Because Step Functions include
@@ -48,14 +48,10 @@ complete we output the current status into the Step Function state. Then we chec
 was successful. If it wasn't then we wait for a period of time and loop back to the check status function. If it was
 successful we go to the next step in the workflow.
 
-![Stop Step Function](stop-step-function.png)
+`gist:chadjvw/21c61b092767562b4fcb42d7f5ee1653#step-function-wait-loop.yml`
 
-When starting an environment, we reverse the process.
-
-![Start Step Function](start-step-function.png)
-
-By using these Step Functions with PCI Cloud, we were able to reduce our operating costs by half. The CFO was quite
-happy about that.
+[![Stop Step Function](stop-step-function-small.png)](stop-step-function.png) [![Start Step
+Function](start-step-function-small.png)](start-step-function.png)
 
 ## Drawbacks
 
@@ -94,4 +90,4 @@ the EC2 and EBS APIs.
 
 ## Final Thoughts
 
-More to follow.
+Runner and composable functions.
