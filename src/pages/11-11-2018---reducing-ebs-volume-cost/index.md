@@ -10,10 +10,10 @@ Before os snapshot: 55% ebs, 43% instance, 2% snapshot
 After os snapshot: 25% ebs, 67% instanc, 8% snapshot
 --->
 
-Cutting AWS EC2 on-demand spending by half may seem like crazy talk but at Power Costs, Inc. (PCI) we achieved this by
-automating the shutdown and snapshotting of our instances. It's been about 2 years since we moved the majority of our
-internal development servers to AWS EC2. This has given us new levels of capability and flexibility and the monetary
-costs that comes with it.
+Cutting AWS on-demand spending by half may seem like crazy talk but at [Power Costs, Inc.](https://www.powercosts.com/)
+(PCI) we achieved this by automating the shutdown and snapshotting of our instances. It's been about 2 years since we
+moved the majority of our internal development servers to AWS EC2. This has given us new levels of capability and
+flexibility and the monetary costs that comes with it.
 
 When we first started out on our move to the cloud we decided to crate a simple CLI app for users. This app talks to a
 server that performs all the AWS API calls and tracks instance state and metadata. In the beginning we focused on the
@@ -21,7 +21,8 @@ basics: create, stop, start and terminate. This gave us good fundamental knowled
 added an automatic shutdown of any instance that was online at 7 PM to keep initial costs under control.
 
 As usage of our service grew we started analyzing what the majority of our cost was going to. Turns out that over 70% of
-our cost was due to EBS volume storage/space. This is because of two main reasons:
+our cost was due to [EBS volume](https://aws.amazon.com/ebs/features/) storage/space. This is because of two main
+reasons:
 
 1. Databases running on EC2 needed anywhere form 30 to 900 GB of volume space
 2. Users create a new database, use it once and never clean it up
@@ -35,16 +36,17 @@ _Sample code and services refrenced in this post are available on
 
 ## AWS Step Functions
 
-Step Functions enable coordination of many AWS services into a serverless workflow. Step Functions are built out of
-task, choice and wait states to control your workflow. Coca-Cola gave a great talk at re:Invent on how they use Step
-Functions for creating nutrition labels.
+[Step Functions](https://aws.amazon.com/step-functions/features/) enable coordination of many AWS services into a
+serverless workflow. Step Functions are built out of task, choice and wait states to control your workflow. Coca-Cola
+gave [a great talk at re:Invent](https://youtu.be/sMaqd5J69Ns?t=502) on how they use Step Functions for creating
+nutrition labels.
 
-Our Step Functions are chains of AWS Lambda functions that call the AWS EC2 API. These Step Functions shutdown an
-instance and convert its EBS volumes to snapshots. Because Step Functions include a wait and choice state this enables
-easy looping. Instead of waiting inside a Lambda function for a snapshot to complete we output the current status into
-the Step Function state. Then we check that output and verify that the action was successful. If it wasn't then we wait
-for a period of time and loop back to the check status function. If it was successful we go to the next step in the
-workflow.
+Our Step Functions are chains of [AWS Lambda](https://aws.amazon.com/lambda/features/) functions that call the AWS EC2
+API. These Step Functions shutdown an instance and convert its EBS volumes to snapshots. Because Step Functions include
+a wait and choice state this enables easy looping. Instead of waiting inside a Lambda function for a snapshot to
+complete we output the current status into the Step Function state. Then we check that output and verify that the action
+was successful. If it wasn't then we wait for a period of time and loop back to the check status function. If it was
+successful we go to the next step in the workflow.
 
 ![Stop Step Function](stop-step-function.png)
 
