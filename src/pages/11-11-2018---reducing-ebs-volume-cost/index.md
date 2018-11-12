@@ -50,30 +50,39 @@ successful we go to the next step in the workflow.
 
 `gist:chadjvw/21c61b092767562b4fcb42d7f5ee1653#step-function-wait-loop.yml`
 
-[![Stop Step Function](stop-step-function-small.png)](stop-step-function.png) [![Start Step
-Function](start-step-function-small.png)](start-step-function.png)
+|Stop Step Function|Start Step Function|
+|---|---|
+[![Stop Step Function](stop-step-function-small.png)](stop-step-function.png) | [![Start Step Function](start-step-function-small.png)](start-step-function.png)
 
 ## Drawbacks
 
-There are some drawbacks to this approach. First, there is a [known performance degradation of an uninitialized
-volume](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-initialize.html). The OS has to sit and wait around for
-EBS to fetch blocks from S3 before they can be used available to the OS. We have noticed that some database queries will be
-slow the first time they are ran then normal speeds every time after that. Since all PCI Cloud environments are not
-business critical, this is something we have been willing to accept.
-
-Second, increased startup and shutdown time. Currently in PCI Cloud it takes about 7 minutes to thaw out and start up
-the EC2 instances and about 15 minutes to reverse the process on shutdown. Shutdown takes longer because we stop all
-the application servers first to give the database a chance to close connections and exit.
+There are some drawbacks to this approach. First, there is a known performance degradation of volumes created from
+snapshots. When you create a new volume from a snapshot AWS loads the blocks from S3 as operating system is requests
+them. This can cause degrade performance until the volume has received all its blocks from S3. [Amazon has a recommended
+solution](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-initialize.html) if this is a concern for you. Second,
+increased startup and shutdown time. Typical EC2 startup and shutdown time is a few minutes. Our shutdown and startup
+process takes about 7 minutes each way.
 
 ## Other Considerations
 
 One thing to keep in mind when designing a Step Function is secure loop iteration. If you have an array of objects that
-need an action performed on them that should only done once (like detaching an EBS volume) have one Lambda
-function that performs work on one element of the array, and another that increments the index.
-This allows you to retry an action if your API action if it gets throttled or leave your service in an exact
-state after an error. [Here is a great example from the Step Function
+need an action performed on them only once you need a secure way to do so. The pattern we follow is to:
+
+1. have the actor Lambda function take in the array and an index value to act upon
+2. Actor Lambda performs work on that index element of the array
+3. Iterator Lambda increments the index after the actor Lambda completes
+4. Choice state completes the loop or sends it back to step 1 if there are more elements in the array
+
+This allows you to handle a single array element failure instead of trying to handle the entire array. A great example
+is detaching volumes from an instance. If you have 2 volumes and only 1 detaches on the first call Amazon will throw an
+error if you repeat the exact same call. We have identified several key API calls that need this pattern:
+
+* Detaching EBS volumes
+* Other stuff
+
+Amazon has [a great example in the Step Function
 docs](https://docs.aws.amazon.com/step-functions/latest/dg/tutorial-create-iterate-pattern-section.html#create-iterate-pattern-step-1)
-on how to do this and you can see our Iterator lambda
+on how to do this. You can view our own Iterator lambda
 [here](https://github.com/powercosts/ebs-sf-example/blob/master/src/functions/iterate.ts) and see it in action below.
 
 `gist:chadjvw/21c61b092767562b4fcb42d7f5ee1653#step-function-iterator.yml`
