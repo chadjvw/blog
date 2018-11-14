@@ -38,7 +38,7 @@
   "devDependencies": {
     "@types/lodash": "4.14.118",
     "@types/node": "10.12.7",
-    "@types/react": "16.7.5",
+    "@types/react": "16.7.6",
     "@types/react-dom": "16.0.9",
     "@types/react-helmet": "5.0.7",
     "node-sass": "4.10.0",
