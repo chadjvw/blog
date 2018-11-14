@@ -16,7 +16,7 @@ comprised about 70% of our daily AWS EC2 spending. When we introduced our first 
 information. Our second snapshot routine snapshots all volumes attached to an instance. This led to EBS volumes
 comprising 25% of our daily spend and 8% on snapshots.
 
-![Cost Reduction](cost-recuction.png)
+![Cost Reduction](cost-reduction.png)
 
 When we first started out on our move to the cloud we decided to create a simple CLI app for users. This app talks to a
 server that performs all the AWS API calls and tracks instance state and metadata. In the beginning we focused on the
