@@ -12385,23 +12385,23 @@ typescript@3.2.1:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.2.1.tgz#0b7a04b8cf3868188de914d9568bd030f0c56192"
   integrity sha512-jw7P2z/h6aPT4AENXDGjcfHTu5CSqzsbZc6YlUIebTyBAq8XaKp78x7VcSh30xwSCcsu5irZkYZUSFP1MrAMbg==
 
-typography-breakpoint-constants@^0.15.10:
-  version "0.15.10"
-  resolved "https://registry.yarnpkg.com/typography-breakpoint-constants/-/typography-breakpoint-constants-0.15.10.tgz#bd5308dd57250e7f28a8c6e1c0e668ddf1178c5c"
-  integrity sha1-vVMI3VclDn8oqMbhwOZo3fEXjFw=
+typography-breakpoint-constants@^0.16.18:
+  version "0.16.18"
+  resolved "https://registry.yarnpkg.com/typography-breakpoint-constants/-/typography-breakpoint-constants-0.16.18.tgz#5b1e24a31879662ca0456828b8f8f8158cd2b436"
+  integrity sha512-9V3cyN4Lh9SUecjirf6F0+bNvIpI0aLx8qXBzErDRdDizPXOojjdSudFr3kv5wx0qseVzUiFkm8LNXvKGOrZKQ==
 
 typography-normalize@^0.14.0:
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/typography-normalize/-/typography-normalize-0.14.0.tgz#1d77c1fe2aaf4a51b3673c4c85c85a65a2d4b573"
   integrity sha1-HXfB/iqvSlGzZzxMhchaZaLUtXM=
 
-typography-theme-judah@0.15.10:
-  version "0.15.10"
-  resolved "https://registry.yarnpkg.com/typography-theme-judah/-/typography-theme-judah-0.15.10.tgz#d373037d5de56c88c895c8df2877f0ba9609c6c3"
-  integrity sha1-03MDfV3lbIjIlcjfKHfwupYJxsM=
+typography-theme-judah@0.16.18:
+  version "0.16.18"
+  resolved "https://registry.yarnpkg.com/typography-theme-judah/-/typography-theme-judah-0.16.18.tgz#7d37917042ab5e47a047ed39878ef1ed85cdc082"
+  integrity sha512-y37u3TRCLDafKSHYLPMWwYukv8z7xkle0X5rohU6686yvZ2S4+7uHi6fcFkDAua5pkY0mFszh4Kyf3gDK66lhg==
   dependencies:
     gray-percentage "^2.0.0"
-    typography-breakpoint-constants "^0.15.10"
+    typography-breakpoint-constants "^0.16.18"
 
 typography@0.16.17:
   version "0.16.17"
