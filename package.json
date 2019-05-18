@@ -36,7 +36,7 @@
     "typography-theme-judah": "0.16.19"
   },
   "devDependencies": {
-    "@types/lodash": "4.14.126",
+    "@types/lodash": "4.14.129",
     "@types/node": "10.14.7",
     "@types/react": "16.8.17",
     "@types/react-dom": "16.8.4",
