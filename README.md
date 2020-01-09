@@ -1,5 +1,7 @@
 # blog
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/33d89754-660a-48d8-baba-dbe631a4d9d1/deploy-status)](https://app.netlify.com/sites/chadjvw/deploys)
+
 📝 A personal website and blog in Gatsby V2 running in production.
 
 Thanks to [Sevket Yalcin](https://twitter.com/sev_yalcin) for desinging such a great blog!

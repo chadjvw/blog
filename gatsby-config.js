@@ -2,7 +2,7 @@ module.exports = {
   siteMetadata: {
     title: 'Chad Van Wyhe',
     author: 'Chad Van Wyhe',
-    description: 'Full Stack developer and AWS Certified Solution Architect',
+    description: 'Software Developer and AWS Certified',
     siteUrl: 'https://chadjvw.xyz',
     twitter: '@chadjvw',
     image: 'https://avatars1.githubusercontent.com/u/1483653?s=400&u=14b38565842dedb27f35576ab1ec2a43f4e0d6b2&v=4',
@@ -46,7 +46,6 @@ module.exports = {
         trackingId: 'UA-128375028-1',
       },
     },
-    // 'gatsby-plugin-feed',
     'gatsby-plugin-offline',
     'gatsby-plugin-react-helmet',
     {

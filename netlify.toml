@@ -1,6 +1,16 @@
 [build.environment]
-  NODE_ENV = "development"
-  NODE_VERSION = "8"
-  YARN_VERSION = "1.12.1"
   YARN_FLAGS = "--pure-lockfile --verbose"
   GIT_LFS_ENABLED = "true"
+
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, s-max-age=604800"
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, s-max-age=604800"
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, s-max-age=604800"
