@@ -1,6 +1,6 @@
 [build.environment]
   YARN_FLAGS = "--pure-lockfile --verbose"
-  YARN_VERSION = "1.21.1"'
+  YARN_VERSION = "1.21.1"
   GIT_LFS_ENABLED = "true"
 
 [[headers]]
