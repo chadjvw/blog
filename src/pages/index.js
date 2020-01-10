@@ -48,6 +48,13 @@ export default class Index extends React.Component {
           </div>
           <div className="link-block">
             <div className="link-block-title">About me</div>
+            <div className="link-block-content">
+              My software journey began with VBA back in 2010 while deployed to Afganistan. Since then I started work as
+              a software developer and have learned a ton from the open source community. This blog allows me to give
+              back to the community that has helped me learn and grow. I love using the right tool for the right job and
+              finding the best solution to solve a problem. I hold 2 AWS Associate Certifications and love all things
+              cloud and serverless.
+            </div>
           </div>
         </LinkMenu>
       </Layout>

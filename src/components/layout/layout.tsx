@@ -44,9 +44,9 @@ class Template extends React.Component<BaseTemplateProps> {
           <a target="blank" href="https://twitter.com/chadjvw" title="Twitter" className="special-link">
             <img src={twitter} alt="Twitter" />
           </a>
-          {/* <a href="mailto:anemail@anemail.com" title="E-Mail" className="special-link">
+          <a href="mailto:chad@vanwyhe.xyz" title="E-Mail" className="special-link">
             <img src={mail} alt="E-Mail" />
-          </a> */}
+          </a>
         </div>
       </div>
     )

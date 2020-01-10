@@ -21,6 +21,6 @@
   [headers.values]
     Cache-Control = "public, s-max-age=31536000"
 [[headers]]
-  for = "index.html"
+  for = "/*.html"
   [headers.values]
     Cache-Control = "no-cache"
