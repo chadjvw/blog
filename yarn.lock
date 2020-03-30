@@ -6153,14 +6153,14 @@ gatsby-plugin-google-analytics@2.2.2:
     "@babel/runtime" "^7.8.7"
     minimatch "3.0.4"
 
-gatsby-plugin-offline@3.0.41:
-  version "3.0.41"
-  resolved "https://registry.yarnpkg.com/gatsby-plugin-offline/-/gatsby-plugin-offline-3.0.41.tgz#e73fc64f3da72e398a89b29b3b8dd6d8c49706ad"
-  integrity sha512-UkeW+2/jVGP2AIZIDPSqUYk+G+5BYe5CX5zb7wrShYpjeY7WCFyEitQRdBF5qAKd9cBzMCCSIjh9Pi+vjeZc9A==
+gatsby-plugin-offline@3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-offline/-/gatsby-plugin-offline-3.1.2.tgz#44e53459a3d04ca1fc432aee69c7c54358d2b4c6"
+  integrity sha512-RYX+tXO0/UGnhDCIcyloUD2veTqLUhOliNF7nyzYMEQKRtbqoIcJkYnJD5rfLWCvM5zqJgcIlr+lpFodA+yp6g==
   dependencies:
     "@babel/runtime" "^7.8.7"
     cheerio "^1.0.0-rc.3"
-    gatsby-core-utils "^1.0.34"
+    gatsby-core-utils "^1.1.1"
     glob "^7.1.6"
     idb-keyval "^3.2.0"
     lodash "^4.17.15"
